@@ -5,6 +5,27 @@ using UnityEngine.UI;
 
 public class dialogueScript : MonoBehaviour
 {
+    [SerializeField] Image Panel;       //페이드인 효과
+    float currentTime = 0;
+    float fadeoutTime = 4;
+
+    
+
+    IEnumerator fadeIn()
+    {
+        Panel.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        Color alpha = Panel.color;
+        while (alpha.a >0)      //알파값 조정으로 주는 화면이 밝아지는 효과
+        {
+            currentTime += Time.deltaTime / fadeoutTime;
+            alpha.a = Mathf.Lerp(1, 0, currentTime);
+            Panel.color = alpha;
+            yield return null;
+        }
+        Panel.gameObject.SetActive(false);
+    }
+
     [SerializeField] SpriteRenderer spriteStandingCG;
     [SerializeField] SpriteRenderer spriteDialogue;
     [SerializeField] Text txt;
@@ -13,6 +34,8 @@ public class dialogueScript : MonoBehaviour
     int dialogueCount=0;        //대화 진행 상황을 알려주는 변수
 
     [SerializeField] Dialogue[] dialogues;
+
+
 
     public void showDialogue()
     {
@@ -41,6 +64,7 @@ public class dialogueScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(fadeIn());
         showDialogue();
     }
 
